@@ -24,13 +24,13 @@ const ArticlePage = () => {
     const fetchArticle = async () => {
       if (!slug) return;
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("articles")
-        .select("id, title, excerpt, content, created_at")
+        .select("id, title, excerpt, content, created_at, image_url")
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
-      setArticle(data);
+      setArticle(data as Article | null);
       setLoading(false);
     };
     fetchArticle();
