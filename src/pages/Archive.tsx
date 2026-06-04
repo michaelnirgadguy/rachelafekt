@@ -16,10 +16,13 @@ interface Article {
   created_at: string;
 }
 
+const CATEGORIES = ["הכל", "פוליטיקה", "דעות", "בשטח", "תרבות", "חברה"];
+
 const Archive = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("הכל");
 
   useEffect(() => {
     const fetch = async () => {
@@ -54,15 +57,15 @@ const Archive = () => {
             <p className="eyebrow mb-4">הארכיון</p>
             <h1 className="heading-xl text-foreground mb-5">כל המאמרים</h1>
             <p className="body-md text-muted-foreground max-w-xl mx-auto">
-              כל המאמרים שפורסמו, מהמוקדמים ועד החדשים ביותר. השתמשו בחיפוש כדי
-              למצוא נושא, ביטוי או שם.
+              כל המאמרים שפורסמו. השתמשו בחיפוש או סננו לפי נושא כדי
+              למצוא את הקריאה הבאה שלכן.
             </p>
           </div>
         </section>
 
-        <section className="section-padding">
-          <div className="container-wide">
-            <div className="relative max-w-xl mx-auto mb-12">
+        <section className="border-b border-border bg-secondary/50">
+          <div className="container-wide px-6 lg:px-20 py-8">
+            <div className="relative max-w-xl mx-auto mb-6">
               <Search className="w-4 h-4 text-muted-foreground absolute right-3 top-1/2 -translate-y-1/2" />
               <Input
                 value={query}
@@ -71,7 +74,26 @@ const Archive = () => {
                 className="pr-10 h-11 bg-background border-border"
               />
             </div>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {CATEGORIES.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setActiveCategory(c)}
+                  className={`text-xs px-3 py-1.5 rounded-sm border transition-colors ${
+                    activeCategory === c
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background text-foreground/70 border-border hover:border-primary/40"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
 
+        <section className="section-padding">
+          <div className="container-wide container-prose">
             {loading ? (
               <p className="text-muted-foreground text-center">טוען...</p>
             ) : filtered.length === 0 ? (
@@ -79,7 +101,7 @@ const Archive = () => {
                 לא נמצאו תוצאות עבור "{query}".
               </p>
             ) : (
-              <ul className="container-prose space-y-10">
+              <ul className="space-y-10">
                 {filtered.map((a) => (
                   <li key={a.id} className="border-b border-border pb-10">
                     <Link to={`/articles/${a.slug}`} className="group block">

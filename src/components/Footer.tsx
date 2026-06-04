@@ -12,7 +12,7 @@ const Footer = () => {
           </p>
         </div>
         <div className="flex items-center gap-6 text-sm">
-          <Link to="/archive" className="text-foreground/80 hover:text-primary">ארכיון</Link>
+          <Link to="/blog" className="text-foreground/80 hover:text-primary">כל המאמרים</Link>
           <Link to="/about" className="text-foreground/80 hover:text-primary">אודות</Link>
           <Link to="/contact" className="text-foreground/80 hover:text-primary">צרו קשר</Link>
           <a
