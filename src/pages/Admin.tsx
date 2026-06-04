@@ -18,6 +18,7 @@ interface Article {
   slug: string;
   published: boolean;
   sort_order: number | null;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -29,7 +30,10 @@ const emptyArticle = {
   slug: "",
   published: false,
   sort_order: 0,
+  image_url: null as string | null,
 };
+
+const BUCKET = "article-images";
 
 const Admin = () => {
   const [articles, setArticles] = useState<Article[]>([]);
