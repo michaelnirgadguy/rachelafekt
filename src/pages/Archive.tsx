@@ -14,6 +14,7 @@ interface Article {
   slug: string;
   content: string;
   created_at: string;
+  image_url: string | null;
 }
 
 const CATEGORIES = ["הכל", "פוליטיקה", "דעות", "בשטח", "תרבות", "חברה"];
