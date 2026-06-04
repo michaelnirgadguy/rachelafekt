@@ -96,8 +96,9 @@ const Admin = () => {
       slug: editing.slug,
       published: editing.published ?? false,
       sort_order: Number.isFinite(editing.sort_order) ? Number(editing.sort_order) : 0,
+      image_url: editing.image_url ?? null,
       updated_at: new Date().toISOString(),
-    };
+    } as any;
 
     if (editing.id) {
       const { error } = await supabase
