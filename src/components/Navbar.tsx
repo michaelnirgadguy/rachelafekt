@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 
 const navItems = [
   { to: "/", label: "בית" },
-  { to: "/archive", label: "ארכיון" },
+  { to: "/blog", label: "כל המאמרים" },
   { to: "/about", label: "אודות" },
   { to: "/contact", label: "צרו קשר" },
 ];
