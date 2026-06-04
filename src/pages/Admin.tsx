@@ -69,7 +69,7 @@ const Admin = () => {
     if (error) {
       toast.error("Failed to load articles");
     } else {
-      setArticles(data || []);
+      setArticles((data || []) as Article[]);
     }
     setLoading(false);
   };
