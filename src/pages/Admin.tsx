@@ -18,7 +18,7 @@ interface Article {
   slug: string;
   published: boolean;
   sort_order: number | null;
-  image_url: string | null;
+  image_url?: string | null;
   created_at: string;
   updated_at: string;
 }
