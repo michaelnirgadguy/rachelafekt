@@ -1,68 +1,89 @@
-import { useState, useEffect } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const navItems = [
-  { label: "הספר", href: "/#book" },
-  { label: "אודות", href: "/#about" },
-  { label: "הגישה שלי", href: "/#approach" },
-  { label: "מאמרים", href: "/#articles" },
-  { label: "צור קשר", href: "/#contact" },
+  { to: "/", label: "בית" },
+  { to: "/archive", label: "ארכיון" },
+  { to: "/about", label: "אודות" },
+  { to: "/contact", label: "צרו קשר" },
 ];
 
 const Navbar = () => {
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => setOpen(false), [location.pathname]);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <nav
-      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-transparent"
+    <header
+      className={`sticky top-0 z-40 transition-all ${
+        scrolled
+          ? "bg-background/90 backdrop-blur border-b border-border"
+          : "bg-background border-b border-transparent"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-center py-4 px-6 relative">
-        <div className="hidden md:flex items-center gap-8">
+      <div className="container-wide flex items-center justify-between px-6 lg:px-20 h-16">
+        <Link to="/" className="font-heading text-lg md:text-xl text-foreground">
+          רחל אפק
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className="text-foreground/80 hover:text-primary transition-colors font-body text-base font-medium"
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === "/"}
+              className={({ isActive }) =>
+                `text-sm font-body link-underline ${
+                  isActive ? "text-primary" : "text-foreground/80 hover:text-foreground"
+                }`
+              }
             >
               {item.label}
-            </Link>
+            </NavLink>
           ))}
-        </div>
-        <Link to="/" className="font-heading text-xl font-bold text-primary absolute right-6">
-          דן גיא
-        </Link>
+        </nav>
+
         <button
-          className="md:hidden text-foreground absolute left-6"
-          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="פתיחת תפריט"
+          className="md:hidden p-2 text-foreground"
+          onClick={() => setOpen((v) => !v)}
         >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
-      {menuOpen && (
-        <div className="md:hidden bg-background border-t border-border px-6 py-4 space-y-3">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className="block text-foreground/80 hover:text-primary transition-colors font-body"
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
+
+      {open && (
+        <nav className="md:hidden border-t border-border bg-background">
+          <ul className="px-6 py-4 flex flex-col gap-3">
+            {navItems.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  end={item.to === "/"}
+                  className={({ isActive }) =>
+                    `block py-1 text-base font-body ${
+                      isActive ? "text-primary" : "text-foreground/80"
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
       )}
-    </nav>
+    </header>
   );
 };
 
