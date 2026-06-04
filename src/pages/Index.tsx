@@ -183,6 +183,16 @@ const Index = () => {
                     to={`/articles/${a.slug}`}
                     className="group block border-t-2 border-foreground/10 pt-5 hover:border-primary transition-colors"
                   >
+                    {a.image_url && (
+                      <div className="mb-4 overflow-hidden aspect-[4/3]">
+                        <img
+                          src={a.image_url}
+                          alt={a.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
                     <div className="flex flex-wrap gap-2 mb-4">
                       <span className="inline-flex items-center text-[11px] uppercase tracking-wider px-2 py-1 bg-secondary text-foreground/70 rounded-sm">
                         {formatHebrewDate(a.created_at)}
