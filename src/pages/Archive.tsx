@@ -27,12 +27,12 @@ const Archive = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("articles")
-        .select("id, title, excerpt, slug, content, created_at")
+        .select("id, title, excerpt, slug, content, created_at, image_url")
         .eq("published", true)
         .order("created_at", { ascending: false });
-      if (data) setArticles(data);
+      if (data) setArticles(data as Article[]);
       setLoading(false);
     };
     fetch();
