@@ -29,11 +29,11 @@ const Index = () => {
     const fetch = async () => {
       const { data } = await supabase
         .from("articles")
-        .select("id, title, excerpt, slug, content, created_at, sort_order")
+        .select("id, title, excerpt, slug, content, created_at, sort_order, image_url")
         .eq("published", true)
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: false });
-      if (data) setArticles(data);
+      if (data) setArticles(data as Article[]);
       setLoading(false);
     };
     fetch();
