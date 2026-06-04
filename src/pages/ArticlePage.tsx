@@ -80,6 +80,15 @@ const ArticlePage = () => {
             </p>
             <h1 className="heading-xl text-foreground mb-6">{article.title}</h1>
             <p className="body-lg text-foreground/75 mb-8">{article.excerpt}</p>
+            {article.image_url && (
+              <figure className="mb-12">
+                <img
+                  src={article.image_url}
+                  alt={article.title}
+                  className="w-full h-auto border border-border"
+                />
+              </figure>
+            )}
             <div className="divider-thin mb-12" />
 
             <div
