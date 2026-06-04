@@ -12,6 +12,7 @@ interface Article {
   excerpt: string;
   content: string;
   created_at: string;
+  image_url: string | null;
 }
 
 const ArticlePage = () => {
@@ -23,13 +24,13 @@ const ArticlePage = () => {
     const fetchArticle = async () => {
       if (!slug) return;
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("articles")
-        .select("id, title, excerpt, content, created_at")
+        .select("id, title, excerpt, content, created_at, image_url")
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
-      setArticle(data);
+      setArticle(data as Article | null);
       setLoading(false);
     };
     fetchArticle();
@@ -79,6 +80,15 @@ const ArticlePage = () => {
             </p>
             <h1 className="heading-xl text-foreground mb-6">{article.title}</h1>
             <p className="body-lg text-foreground/75 mb-8">{article.excerpt}</p>
+            {article.image_url && (
+              <figure className="mb-12">
+                <img
+                  src={article.image_url}
+                  alt={article.title}
+                  className="w-full h-auto border border-border"
+                />
+              </figure>
+            )}
             <div className="divider-thin mb-12" />
 
             <div

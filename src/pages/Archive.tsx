@@ -14,6 +14,7 @@ interface Article {
   slug: string;
   content: string;
   created_at: string;
+  image_url: string | null;
 }
 
 const CATEGORIES = ["הכל", "פוליטיקה", "דעות", "בשטח", "תרבות", "חברה"];
@@ -26,12 +27,12 @@ const Archive = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("articles")
-        .select("id, title, excerpt, slug, content, created_at")
+        .select("id, title, excerpt, slug, content, created_at, image_url")
         .eq("published", true)
         .order("created_at", { ascending: false });
-      if (data) setArticles(data);
+      if (data) setArticles(data as Article[]);
       setLoading(false);
     };
     fetch();
@@ -104,14 +105,26 @@ const Archive = () => {
               <ul className="space-y-10">
                 {filtered.map((a) => (
                   <li key={a.id} className="border-b border-border pb-10">
-                    <Link to={`/articles/${a.slug}`} className="group block">
-                      <p className="eyebrow mb-3">
-                        {formatHebrewDate(a.created_at)} · {readingTime(a.content)}
-                      </p>
-                      <h2 className="heading-lg text-foreground mb-3 group-hover:text-primary transition-colors">
-                        {a.title}
-                      </h2>
-                      <p className="body-md text-foreground/75">{a.excerpt}</p>
+                    <Link to={`/articles/${a.slug}`} className="group block md:grid md:grid-cols-12 md:gap-8">
+                      {a.image_url && (
+                        <div className="md:col-span-4 mb-4 md:mb-0 overflow-hidden aspect-[4/3]">
+                          <img
+                            src={a.image_url}
+                            alt={a.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      <div className={a.image_url ? "md:col-span-8" : "md:col-span-12"}>
+                        <p className="eyebrow mb-3">
+                          {formatHebrewDate(a.created_at)} · {readingTime(a.content)}
+                        </p>
+                        <h2 className="heading-lg text-foreground mb-3 group-hover:text-primary transition-colors">
+                          {a.title}
+                        </h2>
+                        <p className="body-md text-foreground/75">{a.excerpt}</p>
+                      </div>
                     </Link>
                   </li>
                 ))}

@@ -18,6 +18,7 @@ interface Article {
   slug: string;
   published: boolean;
   sort_order: number | null;
+  image_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -29,7 +30,10 @@ const emptyArticle = {
   slug: "",
   published: false,
   sort_order: 0,
+  image_url: null as string | null,
 };
+
+const BUCKET = "article-images";
 
 const Admin = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -65,7 +69,7 @@ const Admin = () => {
     if (error) {
       toast.error("Failed to load articles");
     } else {
-      setArticles(data || []);
+      setArticles((data || []) as Article[]);
     }
     setLoading(false);
   };
@@ -92,8 +96,9 @@ const Admin = () => {
       slug: editing.slug,
       published: editing.published ?? false,
       sort_order: Number.isFinite(editing.sort_order) ? Number(editing.sort_order) : 0,
+      image_url: editing.image_url ?? null,
       updated_at: new Date().toISOString(),
-    };
+    } as any;
 
     if (editing.id) {
       const { error } = await supabase
@@ -131,6 +136,31 @@ const Admin = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+  };
+
+  const [uploading, setUploading] = useState(false);
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please choose an image file");
+      return;
+    }
+    setUploading(true);
+    const ext = file.name.split(".").pop() || "png";
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage
+      .from(BUCKET)
+      .upload(path, file, { contentType: file.type, upsert: false });
+    if (error) {
+      toast.error(`Upload failed: ${error.message}`);
+      setUploading(false);
+      return;
+    }
+    const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+    setEditing((prev) => ({ ...prev, image_url: data.publicUrl }));
+    toast.success("Image uploaded");
+    setUploading(false);
   };
 
   if (loading) {
@@ -210,6 +240,38 @@ const Admin = () => {
                 value={editing.excerpt || ""}
                 onChange={(e) => setEditing((prev) => ({ ...prev, excerpt: e.target.value }))}
               />
+            </div>
+
+            <div>
+              <Label>Cover image (PNG/JPG)</Label>
+              {editing.image_url && (
+                <div className="mt-2 mb-3">
+                  <img
+                    src={editing.image_url}
+                    alt="Cover preview"
+                    className="max-h-48 rounded border border-border"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => setEditing((prev) => ({ ...prev, image_url: null }))}
+                  >
+                    Remove image
+                  </Button>
+                </div>
+              )}
+              <Input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                disabled={uploading}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleImageUpload(file);
+                }}
+              />
+              {uploading && <p className="text-xs text-muted-foreground mt-1">Uploading...</p>}
             </div>
 
             <div>

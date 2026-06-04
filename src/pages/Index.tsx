@@ -17,6 +17,7 @@ interface Article {
   content: string;
   created_at: string;
   sort_order: number | null;
+  image_url: string | null;
 }
 
 const Index = () => {
@@ -26,13 +27,13 @@ const Index = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("articles")
-        .select("id, title, excerpt, slug, content, created_at, sort_order")
+        .select("id, title, excerpt, slug, content, created_at, sort_order, image_url")
         .eq("published", true)
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: false });
-      if (data) setArticles(data);
+      if (data) setArticles(data as Article[]);
       setLoading(false);
     };
     fetch();
@@ -119,6 +120,16 @@ const Index = () => {
               <Link to={`/articles/${featured.slug}`} className="block group">
                 <article className="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
                   <div className="md:col-span-8">
+                    {featured.image_url && (
+                      <div className="mb-6 overflow-hidden border border-border">
+                        <img
+                          src={featured.image_url}
+                          alt={featured.title}
+                          className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
                     <p className="eyebrow mb-4">
                       {formatHebrewDate(featured.created_at)} · {readingTime(featured.content)}
                     </p>
@@ -172,6 +183,16 @@ const Index = () => {
                     to={`/articles/${a.slug}`}
                     className="group block border-t-2 border-foreground/10 pt-5 hover:border-primary transition-colors"
                   >
+                    {a.image_url && (
+                      <div className="mb-4 overflow-hidden aspect-[4/3]">
+                        <img
+                          src={a.image_url}
+                          alt={a.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
                     <div className="flex flex-wrap gap-2 mb-4">
                       <span className="inline-flex items-center text-[11px] uppercase tracking-wider px-2 py-1 bg-secondary text-foreground/70 rounded-sm">
                         {formatHebrewDate(a.created_at)}
