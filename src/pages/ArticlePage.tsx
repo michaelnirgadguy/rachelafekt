@@ -12,6 +12,7 @@ interface Article {
   excerpt: string;
   content: string;
   created_at: string;
+  image_url: string | null;
 }
 
 const ArticlePage = () => {
