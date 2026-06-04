@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToHash from "@/components/ScrollToHash";
 import Index from "./pages/Index";
+import Archive from "./pages/Archive";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import ArticlePage from "./pages/ArticlePage";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
@@ -21,6 +24,9 @@ const App = () => (
         <ScrollToHash />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/archive" element={<Archive />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/articles/:slug" element={<ArticlePage />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/login" element={<AdminLogin />} />
