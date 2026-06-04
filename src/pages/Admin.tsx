@@ -243,6 +243,38 @@ const Admin = () => {
             </div>
 
             <div>
+              <Label>Cover image (PNG/JPG)</Label>
+              {editing.image_url && (
+                <div className="mt-2 mb-3">
+                  <img
+                    src={editing.image_url}
+                    alt="Cover preview"
+                    className="max-h-48 rounded border border-border"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => setEditing((prev) => ({ ...prev, image_url: null }))}
+                  >
+                    Remove image
+                  </Button>
+                </div>
+              )}
+              <Input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                disabled={uploading}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleImageUpload(file);
+                }}
+              />
+              {uploading && <p className="text-xs text-muted-foreground mt-1">Uploading...</p>}
+            </div>
+
+            <div>
               <Label>Content</Label>
               <RichTextEditor
                 content={editing.content || ""}
