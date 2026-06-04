@@ -120,6 +120,16 @@ const Index = () => {
               <Link to={`/articles/${featured.slug}`} className="block group">
                 <article className="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
                   <div className="md:col-span-8">
+                    {featured.image_url && (
+                      <div className="mb-6 overflow-hidden border border-border">
+                        <img
+                          src={featured.image_url}
+                          alt={featured.title}
+                          className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
                     <p className="eyebrow mb-4">
                       {formatHebrewDate(featured.created_at)} · {readingTime(featured.content)}
                     </p>
