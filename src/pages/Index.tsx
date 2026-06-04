@@ -27,7 +27,7 @@ const Index = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("articles")
         .select("id, title, excerpt, slug, content, created_at, sort_order, image_url")
         .eq("published", true)
