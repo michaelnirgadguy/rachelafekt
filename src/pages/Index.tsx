@@ -17,6 +17,7 @@ interface Article {
   content: string;
   created_at: string;
   sort_order: number | null;
+  image_url: string | null;
 }
 
 const Index = () => {
